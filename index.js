@@ -1,12 +1,10 @@
 const axios = require("axios");
 const express = require("express");
-const qs = require("qs");
+const url = require("url");
 
-const PORT = process.env.PORT || 6789;
+const PORT = process.env.PORT;
 const CLIENT_ID = process.env.CLIENT_ID;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const USERNAME = process.env.USERNAME;
-const PASSWORD = process.env.PASSWORD;
+const CLIENT_SECRET = process.env.CLIENT_SECRET 
 const app = express();
 
 app.get("/", (req, res) => {
@@ -14,21 +12,20 @@ app.get("/", (req, res) => {
 });
 
 app.get("/authorize", async (req, res) => {
-  console.log({ CLIENT_ID, CLIENT_SECRET, USERNAME, PASSWORD });
-  const data = qs({
+  const params = new url.URLSearchParams({
     client_id: CLIENT_ID,
     client_secret: CLIENT_SECRET,
-    redirect_uri: "https://figsite-test.herokuapp.com/",
-    grant_type: "password",
-    username: USERNAME,
-    password: PASSWORD,
+    redirect_uri: "https://figsite-test.herokuapp.com/authorize",
+    grant_type: "authorization_code",
+    code: req?.query?.code,
   });
+
   try {
     const result = await axios.post(
       "https://public-api.wordpress.com/oauth2/token",
-      data
+      params.toString()
     );
-    res.json(result);
+    res.json(result.data);
   } catch (e) {
     result = res.json(e);
   }
