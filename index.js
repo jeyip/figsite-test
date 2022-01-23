@@ -1,11 +1,23 @@
 const axios = require("axios");
 const express = require("express");
 const url = require("url");
+const crypto = require("crypto");
 
 const PORT = process.env.PORT;
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET 
 const app = express();
+
+function base64URLEncode(str) {
+  return str.toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+}
+
+function sha256(buffer) {
+  return crypto.createHash('sha256').update(buffer).digest();
+}
 
 app.get("/", (req, res) => {
   res.json("Test");
@@ -30,5 +42,14 @@ app.get("/authorize", async (req, res) => {
     result = res.json(e);
   }
 });
+
+app.get("/access", (req) => {
+  let challenge;
+  const verifier = base64URLEncode(crypto.randomBytes(32));
+
+  if(verifier){
+    challenge = base64URLEncode(sha256(verifier));
+  }
+})
 
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));
