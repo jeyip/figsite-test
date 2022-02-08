@@ -38,7 +38,7 @@ app.get("/authorize", async (req, res) => {
       params.toString()
     );
     if (result?.data?.access_token) {
-      const { access_token, blod_id, blog_url } = result.data
+      const { access_token, blog_id, blog_url } = result.data
 
       res.send(`Authentication complete! You can return to the figma desktop app now. Access Granted for ${blog_url} where blog id is ${blog_id} with token ${access_token}`);
     }
