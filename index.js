@@ -3,7 +3,7 @@ const express = require("express");
 const url = require("url");
 const crypto = require("crypto");
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8888;
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET 
 const app = express();
@@ -40,10 +40,10 @@ app.get("/authorize", async (req, res) => {
     if (result?.data?.access_token) {
       const { access_token, blod_id, blog_url } = result.data
 
-      res.render(`Authentication complete! You can return to the figma desktop app now. Access Granted for ${blog_url} where blog id is ${blog_id} with token ${access_token}`);
+      res.send(`Authentication complete! You can return to the figma desktop app now. Access Granted for ${blog_url} where blog id is ${blog_id} with token ${access_token}`);
     }
 
-    res.render('Authentication unsuccessful. Please try again in a few minutes.');
+    res.send('Authentication unsuccessful. Please try again in a few minutes.');
   } catch (e) {
     result = res.json(e);
   }
