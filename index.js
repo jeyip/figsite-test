@@ -37,7 +37,13 @@ app.get("/authorize", async (req, res) => {
       "https://public-api.wordpress.com/oauth2/token",
       params.toString()
     );
-    res.json(result.data);
+    if (result?.data?.access_token) {
+      const { access_token, blod_id, blog_url } = result.data
+
+      res.render(`Authentication complete! You can return to the figma desktop app now. Access Granted for ${blog_url} where blog id is ${blog_id} with token ${access_token}`);
+    }
+
+    res.render('Authentication unsuccessful. Please try again in a few minutes.');
   } catch (e) {
     result = res.json(e);
   }
